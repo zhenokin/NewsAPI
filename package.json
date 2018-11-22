@@ -1,0 +1,19 @@
+{
+  "name": "NewsAPI",
+  "version": "1.0.0",
+  "description": "",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/zhenokin/NewsAPI.git"
+  },
+  "author": "Yauheni_Vaitkevich",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/zhenokin/NewsAPI/issues"
+  },
+  "homepage": "https://github.com/zhenokin/NewsAPI#readme"
+}
