@@ -19,5 +19,8 @@
   "devDependencies": {
     "eslint": "^5.9.0",
     "eslint-config-airbnb": "^17.1.0"
+  },
+  "eslintConfig": {
+    "root": true
   }
 }
