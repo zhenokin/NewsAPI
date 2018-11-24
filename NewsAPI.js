@@ -3,9 +3,9 @@
 const my_api = 'ae0fbd3d023b434d8433d1e421bae74f';
 
 const TYPE_OF_SEARCH_NAMES = {
-    TOP_HEADLINES: 'topHeadlines',
-    EVERYTHING: 'everything',
-    SOURCES: 'sources'
+    TOP_HEADLINES: 'Top headlines',
+    EVERYTHING: 'Everything',
+    SOURCES: 'Sources'
 };
 
 const TYPE_OF_SEARCH_DESCRIPTIONS = {
@@ -31,7 +31,8 @@ const PARAMETERS = {
             maxLength: 2,
             id: 'field_country',
             list: 'countries_list',
-            type: 'text'
+            type: 'text',
+            placeholder: 'country'
         },
         dataList: 'input'
     },
@@ -48,13 +49,15 @@ const PARAMETERS = {
         options: {
             id: 'field_sources',
             type: 'text',
+            placeholder: 'sources'
         }
     },
     q: {
         elementType: 'input',
         options: {
             id: 'field_q',
-            type: 'text'
+            type: 'text',
+            placeholder: 'q'
         }
     },
     pageSize: {
@@ -63,7 +66,8 @@ const PARAMETERS = {
             id: 'field_pageSize',
             type: 'number',
             max: 100,
-            min: 1
+            min: 1,
+            placeholder: 'pageSize'
         }
     },
     // page: {
@@ -80,9 +84,26 @@ const PARAMETERS = {
         availableValues: ['relevancy', 'popularity', 'publishedAt'],
         elementType: 'select',
         options: {
-            id: 'field_sortBy'
+            id: 'field_sortBy',
+            placeholder: 'sortBy'
         },
         dataList: 'select'
+    },
+    from: {
+        elementType: 'input',
+        options: {
+            id: 'field_from',
+            placeholder: 'from',
+            type: 'date'
+        }
+    },
+    to: {
+        elementType: 'input',
+        options: {
+            id: 'field_to',
+            placeholder: 'to',
+            type: 'date'
+        }
     }
 };
 const ListOfParametersFields = {};
@@ -104,18 +125,19 @@ const createDataListForField = ({ values, parent = null, listId = '' }) => {
 };
 
 const createParameterFields = () => {
-    const form = document.getElementsByName('settings_form');
+    const form = document.getElementsByName('settings_form')[0];
     const submitButton = document.getElementById('settings_form_submit');
     Object.keys(PARAMETERS).forEach(key => {
         const { availableValues, elementType, options, dataList } = PARAMETERS[key];
-        const newField = document.createElement(`${elementType}`);
+        const newField = document.createElement(elementType);
         let dataListElement;
-
+        newField.setAttribute('list', '123');
         Object.keys(options).forEach(prop => {
-            newField[prop] = options[prop];
+            newField.setAttribute(prop, options[prop]);
+            //newField[prop] = options[prop];
         });
 
-        ListOfParametersFields[options.id] = newField;
+        ListOfParametersFields[key] = newField;
         if (dataList) {
             switch(dataList) {
             case 'input': 
@@ -130,14 +152,32 @@ const createParameterFields = () => {
         if (dataListElement !== newField) {
             form.insertBefore(newField, submitButton);
         }
-        form.insertBefore(dataListElement, submitButton);
+        if (dataListElement) {
+            form.insertBefore(dataListElement, submitButton);
+        }
     });
+};
+
+const preperSettingsForCurrentTypeSearch = () => {
+    const typeOfSearch = document.getElementById('type_of_search').value;
+    const availableParameters = TYPE_OF_SEARCH_DESCRIPTIONS[typeOfSearch].availableParameters;
+    Object.keys(ListOfParametersFields).forEach(parameter => {
+        const field = ListOfParametersFields[parameter];
+        availableParameters.indexOf(parameter) !== -1 ? field.style.display = 'inline' : field.style.display = 'none';
+    });
+};
+
+const addEventListeners = () => {
+    document.getElementById('type_of_search').onchange = () => {
+        preperSettingsForCurrentTypeSearch();
+    };
 };
 
 
 const StartWork = () => {
     createParameterFields();
-    const currentTypeOfSearch = document.getElementById('type_of_search').value;
+    preperSettingsForCurrentTypeSearch();
+    addEventListeners();
 };
 
 StartWork();
