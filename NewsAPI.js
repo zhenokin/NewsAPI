@@ -1,11 +1,11 @@
 'use strict';
 
-const my_api = 'ae0fbd3d023b434d8433d1e421bae74f';
+const MY_API = 'ae0fbd3d023b434d8433d1e421bae74f';
 
 const TYPE_OF_SEARCH_NAMES = {
-    TOP_HEADLINES: 'Top headlines',
-    EVERYTHING: 'Everything',
-    SOURCES: 'Sources'
+    TOP_HEADLINES: 'top-headlines',
+    EVERYTHING: 'everything',
+    SOURCES: 'sources'
 };
 
 const TYPE_OF_SEARCH_DESCRIPTIONS = {
@@ -131,7 +131,6 @@ const createParameterFields = () => {
         const { availableValues, elementType, options, dataList } = PARAMETERS[key];
         const newField = document.createElement(elementType);
         let dataListElement;
-        newField.setAttribute('list', '123');
         Object.keys(options).forEach(prop => {
             newField.setAttribute(prop, options[prop]);
             //newField[prop] = options[prop];
@@ -167,9 +166,51 @@ const preperSettingsForCurrentTypeSearch = () => {
     });
 };
 
+const preperRequestParameters = () => {
+    const typeOfSearch = document.getElementById('type_of_search').value;
+    const availableParameters = TYPE_OF_SEARCH_DESCRIPTIONS[typeOfSearch].availableParameters;
+    const requestParameters = {};
+    Object.keys(ListOfParametersFields).forEach(parameter => {
+        const field = ListOfParametersFields[parameter];
+        if (availableParameters.indexOf(parameter) !== -1) {
+            requestParameters[parameter] = field.value;
+        }
+    });
+    return requestParameters;
+};
+
+const processingOfResults = results => {
+    
+};
+
+const sendRequest = parameters => {
+    let url = `https://newsapi.org/v2/${document.getElementById('type_of_search').value}?`;
+    Object.keys(parameters).forEach(parameter => {
+        if(parameters[parameter]) {
+            url += `${parameter}=${parameters[parameter]}&`;
+        }
+    });
+    url += `apiKey=${MY_API}`;
+    url = 'https://newsapi.org/v2/top-headlines?country=us&category=business&apiKey=ae0fbd3d023b434d8433d1e421bae74f'
+    const req = new Request(url);
+    fetch(req)
+        .then((resp) => {
+            resp.json()
+                .then(results => processingOfResults(results));
+        })
+        .catch(err => {
+            console.log(err);
+        });
+};
+
 const addEventListeners = () => {
     document.getElementById('type_of_search').onchange = () => {
         preperSettingsForCurrentTypeSearch();
+    };
+    document.getElementsByName('settings_form')[0].onsubmit = () => {
+        const requestParameters = preperRequestParameters();
+        sendRequest(requestParameters);
+        return false;
     };
 };
 
