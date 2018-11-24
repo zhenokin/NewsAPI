@@ -179,8 +179,43 @@ const preperRequestParameters = () => {
     return requestParameters;
 };
 
-const processingOfResults = results => {
+const createContainerByDescription = (name, description) => {
+    const container = document.createElement('div');
+    container.class = `${name}_container`;
+
+    const nameContainer = document.createElement('div');
+    nameContainer.class = `${name}_name`;
+    nameContainer.style.display = 'inline-block';
+    nameContainer.innerHTML = name;
+    container.appendChild(nameContainer);
+
+    const descriptionContainer = document.createElement('div');
+    descriptionContainer.class = `${name}_description`;
+    descriptionContainer.style.display = 'inline-block';
+    descriptionContainer.innerHTML = description;
+    container.appendChild(descriptionContainer);
+
+    return container;
+
+};
+
+const createVisualResult = result => {
+    const listOfResults = document.getElementById('results');
+    const container = document.createElement('div');
+    container.class = 'result_container';
     
+    Object.keys(result).forEach(desc => {
+        const descriptionContainer = createContainerByDescription(desc, result[desc]);
+        container.appendChild(descriptionContainer);
+    });
+
+    listOfResults.appendChild(container);
+};
+
+const processingOfResults = results => {
+    results.articles.forEach(news => {
+        createVisualResult(news);
+    });
 };
 
 const sendRequest = parameters => {
