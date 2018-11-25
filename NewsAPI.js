@@ -224,11 +224,12 @@ const createVisualResult = result => {
 };
 
 const processingOfResults = results => {
-    if (!results.articles.length) {
-        alert('nothing founded')
+    const arcticlesOrSources = results.articles || results.sources;
+    if (!arcticlesOrSources.length ) {
+        alert('nothing founded');
     } else {
         resetRezults();
-        results.articles.forEach(news => {
+        arcticlesOrSources.forEach(news => {
             createVisualResult(news);
         });
     }
@@ -245,8 +246,8 @@ const sendRequest = parameters => {
     const req = new Request(url);
     fetch(req)
         .then((resp) => {
-            if (resp.status === 400) {
-                alert(`status: ${resp.status}\n message: ${resp.statusText}`)
+            if (resp.status !== 200) {
+                alert(`status: ${resp.status}\n message: ${resp.statusText}`);
             } else {
                 resp.json()
                     .then(results => processingOfResults(results));
