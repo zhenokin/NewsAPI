@@ -37,7 +37,7 @@ const PARAMETERS = {
         dataList: 'input'
     },
     category: {
-        availableValues: ['business', 'entertainment', 'general', 'health', 'science', 'sports', 'technology'],
+        availableValues: ['', 'business', 'entertainment', 'general', 'health', 'science', 'sports', 'technology'],
         elementType: 'select',
         options: {
             id: 'field_category'
@@ -181,16 +181,19 @@ const preperRequestParameters = () => {
 
 const createContainerByDescription = (name, description) => {
     const container = document.createElement('div');
-    container.class = `${name}_container`;
+    //container.className = `${name}_container`;
+    container.className = 'info_container';
 
     const nameContainer = document.createElement('div');
-    nameContainer.class = `${name}_name`;
+    //nameContainer.className = `${name}_name`;
+    nameContainer.className = 'info_name';
     nameContainer.style.display = 'inline-block';
     nameContainer.innerHTML = name;
     container.appendChild(nameContainer);
 
     const descriptionContainer = document.createElement('div');
-    descriptionContainer.class = `${name}_description`;
+    //descriptionContainer.className = `${name}_description`;
+    descriptionContainer.className = 'info_description';
     descriptionContainer.style.display = 'inline-block';
     descriptionContainer.innerHTML = description;
     container.appendChild(descriptionContainer);
@@ -199,23 +202,36 @@ const createContainerByDescription = (name, description) => {
 
 };
 
+const resetRezults = () => {
+    const results = document.getElementById('results');
+    while(results.firstChild) {
+        results.removeChild(results.firstChild);
+    }
+};
+
 const createVisualResult = result => {
     const listOfResults = document.getElementById('results');
     const container = document.createElement('div');
-    container.class = 'result_container';
+    container.className = 'result_container';
     
     Object.keys(result).forEach(desc => {
         const descriptionContainer = createContainerByDescription(desc, result[desc]);
         container.appendChild(descriptionContainer);
     });
 
+    listOfResults.style.border = '3px solid black';
     listOfResults.appendChild(container);
 };
 
 const processingOfResults = results => {
-    results.articles.forEach(news => {
-        createVisualResult(news);
-    });
+    if (!results.articles.length) {
+        alert('nothing founded')
+    } else {
+        resetRezults();
+        results.articles.forEach(news => {
+            createVisualResult(news);
+        });
+    }
 };
 
 const sendRequest = parameters => {
@@ -226,12 +242,15 @@ const sendRequest = parameters => {
         }
     });
     url += `apiKey=${MY_API}`;
-    url = 'https://newsapi.org/v2/top-headlines?country=us&category=business&apiKey=ae0fbd3d023b434d8433d1e421bae74f'
     const req = new Request(url);
     fetch(req)
         .then((resp) => {
-            resp.json()
-                .then(results => processingOfResults(results));
+            if (resp.status === 400) {
+                alert(`status: ${resp.status}\n message: ${resp.statusText}`)
+            } else {
+                resp.json()
+                    .then(results => processingOfResults(results));
+            }
         })
         .catch(err => {
             console.log(err);
@@ -242,10 +261,39 @@ const addEventListeners = () => {
     document.getElementById('type_of_search').onchange = () => {
         preperSettingsForCurrentTypeSearch();
     };
+
     document.getElementsByName('settings_form')[0].onsubmit = () => {
         const requestParameters = preperRequestParameters();
         sendRequest(requestParameters);
         return false;
+    };
+
+    document.getElementById('field_sources').onchange = () => {
+        const sourcesValue = document.getElementById('field_sources').value;
+        const countryField = document.getElementById('field_country');
+        const categoryField = document.getElementById('field_category');
+
+        if (sourcesValue) {
+            countryField.disabled = true;
+            categoryField.disabled = true;
+        } else {
+            countryField.disabled = false;
+            categoryField.disabled = false;
+        }
+    };
+
+    document.getElementById('field_country').onchange = () => {
+        const sourcesField = document.getElementById('field_sources');
+        const countryValue = document.getElementById('field_country').value;
+
+        countryValue ? sourcesField.disabled = true : sourcesField.disabled = false;
+    };
+
+    document.getElementById('field_category').onchange = () => {
+        const sourcesField = document.getElementById('field_sources');
+        const categoryValue = document.getElementById('field_category').value;
+
+        categoryValue ? sourcesField.disabled = true : sourcesField.disabled = false;
     };
 };
 

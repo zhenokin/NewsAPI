@@ -1,0 +1,31 @@
+#results {
+    display: flex;
+    flex-direction: column;
+}
+
+.settings {
+    display: flex;
+    width: 70%;
+}
+
+.result_container {
+    margin: 5px 0 15px 0;
+}
+
+.info_container {
+    margin: 5px;
+    border: 2px solid black;
+}
+
+.info_name {
+    margin-right: 20px;
+    padding: 5px;
+    border-right: 2px solid black;
+    width: 10%;
+    text-align: center;
+}
+
+.info_description {
+    width: 70%;
+    text-align: center;
+}
