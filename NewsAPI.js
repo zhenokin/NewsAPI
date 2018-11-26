@@ -57,7 +57,8 @@ const PARAMETERS = {
         options: {
             id: 'field_q',
             type: 'text',
-            placeholder: 'q'
+            placeholder: 'q',
+            title: 'keyword'
         }
     },
     pageSize: {
@@ -81,7 +82,7 @@ const PARAMETERS = {
         dataList: 'select'
     },
     sortBy: {
-        availableValues: ['relevancy', 'popularity', 'publishedAt'],
+        availableValues: ['', 'relevancy', 'popularity', 'publishedAt'],
         elementType: 'select',
         options: {
             id: 'field_sortBy',
@@ -187,7 +188,7 @@ const preperRequestParameters = () => {
     const availableParameters = TYPE_OF_SEARCH_DESCRIPTIONS[typeOfSearch].availableParameters;
     const requestParameters = {};
     Object.keys(ListOfParametersFields).forEach(parameter => {
-        const field = ListOfParametersFields[parameter];
+        const field = ListOfParametersFields[parameter].childNodes[1];
         if (availableParameters.includes(parameter)) {
             requestParameters[parameter] = field.value;
         }
@@ -211,7 +212,7 @@ const createContainerByDescription = (name, description) => {
     //descriptionContainer.className = `${name}_description`;
     descriptionContainer.className = 'info_description';
     descriptionContainer.style.display = 'inline-block';
-    descriptionContainer.innerHTML = description;
+    descriptionContainer.innerHTML = description && typeof description === 'object' ? Object.keys(description).reduce((str, key) => str +`${key}:  ${description[key]} ////`,'') : description;
     container.appendChild(descriptionContainer);
 
     return container;
@@ -252,6 +253,10 @@ const processingOfResults = results => {
     }
 };
 
+const processingOfError = error => {
+    alert(`code: ${error.code}\nmessage: ${error.message}\nstatus: ${error.status}`);
+};
+
 const sendRequest = parameters => {
     let url = `https://newsapi.org/v2/${document.getElementById('type_of_search').value}?`;
     Object.keys(parameters).forEach(parameter => {
@@ -264,14 +269,16 @@ const sendRequest = parameters => {
     fetch(req)
         .then((resp) => {
             if (resp.status !== 200) {
-                alert(`status: ${resp.status}\n message: ${resp.statusText}`);
+                return Promise.reject(resp);
+                //alert(`status: ${resp.status}\n message: ${resp.statusText}`);
             } else {
                 resp.json()
                     .then(results => processingOfResults(results));
             }
         })
         .catch(err => {
-            console.log(err);
+            err.json()
+                .then(e => processingOfError(e));
         });
 };
 
