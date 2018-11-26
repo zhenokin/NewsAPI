@@ -73,7 +73,7 @@ const PARAMETERS = {
     // page: {
     // },
     language: {
-        availableValues: ['ar', 'de', 'en', 'es', 'fr', 'he', 'it', 'nl', 'no', 'pt', 'ru', 'se', 'ud', 'zh'],
+        availableValues: ['', 'ar', 'de', 'en', 'es', 'fr', 'he', 'it', 'nl', 'no', 'pt', 'ru', 'se', 'ud', 'zh'],
         elementType: 'select',
         options: {
             id: 'field_language'
@@ -125,18 +125,33 @@ const createDataListForField = ({ values, parent = null, listId = '' }) => {
 };
 
 const createParameterFields = () => {
-    const form = document.getElementsByName('settings_form')[0];
+    const form = document.forms[0];
     const submitButton = document.getElementById('settings_form_submit');
+    const fieldSet = document.createElement('fieldset');
+
+    fieldSet.setAttribute('id', 'fieldset_settings');
+    fieldSet.innerHTML = 'Settings';
+    form.insertBefore(fieldSet, submitButton);
+
+
+
     Object.keys(PARAMETERS).forEach(key => {
         const { availableValues, elementType, options, dataList } = PARAMETERS[key];
+        const tagP = document.createElement('p');
+        const tagLabel = document.createElement('label');
         const newField = document.createElement(elementType);
         let dataListElement;
+
+        tagP.appendChild(tagLabel);
+        tagP.appendChild(newField);
+        tagLabel.innerHTML = key;
         Object.keys(options).forEach(prop => {
             newField.setAttribute(prop, options[prop]);
-            //newField[prop] = options[prop];
+            newField.setAttribute('class', 'inputs');
         });
 
-        ListOfParametersFields[key] = newField;
+        ListOfParametersFields[key] = tagP;
+        tagP.style.justifyContent = 'space-between';
         if (dataList) {
             switch(dataList) {
             case 'input': 
@@ -149,11 +164,12 @@ const createParameterFields = () => {
         }
 
         if (dataListElement !== newField) {
-            form.insertBefore(newField, submitButton);
+            tagP.appendChild(newField);
         }
         if (dataListElement) {
-            form.insertBefore(dataListElement, submitButton);
+            tagP.appendChild(dataListElement);
         }
+        fieldSet.appendChild(tagP);
     });
 };
 
@@ -162,7 +178,7 @@ const preperSettingsForCurrentTypeSearch = () => {
     const availableParameters = TYPE_OF_SEARCH_DESCRIPTIONS[typeOfSearch].availableParameters;
     Object.keys(ListOfParametersFields).forEach(parameter => {
         const field = ListOfParametersFields[parameter];
-        availableParameters.indexOf(parameter) !== -1 ? field.style.display = 'inline' : field.style.display = 'none';
+        availableParameters.includes(parameter) ? field.style.display = 'flex' : field.style.display = 'none';
     });
 };
 
@@ -172,7 +188,7 @@ const preperRequestParameters = () => {
     const requestParameters = {};
     Object.keys(ListOfParametersFields).forEach(parameter => {
         const field = ListOfParametersFields[parameter];
-        if (availableParameters.indexOf(parameter) !== -1) {
+        if (availableParameters.includes(parameter)) {
             requestParameters[parameter] = field.value;
         }
     });
@@ -259,13 +275,15 @@ const sendRequest = parameters => {
         });
 };
 
+const changePropertyDisabledByInputs = (ids, value) => {
+    ids.forEach(id => document.getElementById(id).disabled = value);
+};
+
 const addEventListeners = () => {
     document.getElementById('type_of_search').onchange = () => {
         resetRezults();
         preperSettingsForCurrentTypeSearch();
-        document.getElementById('field_sources').disabled = false;
-        document.getElementById('field_country').disabled = false;
-        document.getElementById('field_category').disabled = false;
+        changePropertyDisabledByInputs(['field_sources', 'field_country', 'field_category'], false);
     };
 
     document.getElementsByName('settings_form')[0].onsubmit = () => {
@@ -276,30 +294,21 @@ const addEventListeners = () => {
 
     document.getElementById('field_sources').onchange = () => {
         const sourcesValue = document.getElementById('field_sources').value;
-        const countryField = document.getElementById('field_country');
-        const categoryField = document.getElementById('field_category');
-
         if (sourcesValue) {
-            countryField.disabled = true;
-            categoryField.disabled = true;
+            changePropertyDisabledByInputs(['field_country', 'field_category'], true);
         } else {
-            countryField.disabled = false;
-            categoryField.disabled = false;
+            changePropertyDisabledByInputs(['field_country', 'field_category'], false);
         }
     };
 
     document.getElementById('field_country').onchange = () => {
-        const sourcesField = document.getElementById('field_sources');
-        const countryValue = document.getElementById('field_country').value;
-
-        countryValue ? sourcesField.disabled = true : sourcesField.disabled = false;
+        const hasValue = !!document.getElementById('field_country').value;
+        changePropertyDisabledByInputs(['field_sources'], hasValue);
     };
 
     document.getElementById('field_category').onchange = () => {
-        const sourcesField = document.getElementById('field_sources');
-        const categoryValue = document.getElementById('field_category').value;
-
-        categoryValue ? sourcesField.disabled = true : sourcesField.disabled = false;
+        const hasValue = !!document.getElementById('field_category').value;
+        changePropertyDisabledByInputs(['field_sources'], hasValue);
     };
 };
 

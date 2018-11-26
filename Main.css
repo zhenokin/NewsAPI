@@ -3,6 +3,22 @@
     flex-direction: column;
 }
 
+#field_country {
+    width: 50%;
+}
+
+#field_sources {
+    width: 70%;
+}
+
+#field_pageSize {
+    width: 40%;
+}
+
+#fieldset_settings {
+    margin: 20px 0 20px 0;
+}
+
 .settings {
     display: flex;
     width: 70%;
