@@ -5,8 +5,8 @@
   "main": "index.js",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
-    "build": "babel src --out-file compiled.js", 
-    "watch": "babel src --watch --out-file compiled.js" 
+    "build": "babel NewsAPI.js --out-file compiled.js", 
+    "watch": "babel ./ --watch --out-file compiled.js" 
 
   },
   "repository": {
