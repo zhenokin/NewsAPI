@@ -187,7 +187,7 @@ var preperSettingsForCurrentTypeSearch = function preperSettingsForCurrentTypeSe
   var availableParameters = TYPE_OF_SEARCH_DESCRIPTIONS[typeOfSearch].availableParameters;
   Object.keys(ListOfParametersFields).forEach(function (parameter) {
     var field = ListOfParametersFields[parameter];
-    availableParameters.includes(parameter) ? field.style.display = 'flex' : field.style.display = 'none';
+    availableParameters.indexOf(parameter) !== -1 ? field.style.display = 'flex' : field.style.display = 'none';
   });
 };
 
@@ -198,7 +198,7 @@ var preperRequestParameters = function preperRequestParameters() {
   Object.keys(ListOfParametersFields).forEach(function (parameter) {
     var field = ListOfParametersFields[parameter].childNodes[1];
 
-    if (availableParameters.includes(parameter)) {
+    if (availableParameters.indexOf(parameter) !== -1) {
       requestParameters[parameter] = field.value;
     }
   });
