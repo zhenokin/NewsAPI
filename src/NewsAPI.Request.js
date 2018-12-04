@@ -18,19 +18,7 @@ class NewsRequest {
     sendRequest(typeOfSearch, ListOfParametersFields) {
         const url = this.createUrl(typeOfSearch, ListOfParametersFields);
         const req = new Request(url);
-        return fetch(req)
-            .then((resp) => {
-                if (resp.status !== 200) {
-                    return Promise.reject(resp);
-                    //alert(`status: ${resp.status}\n message: ${resp.statusText}`);
-                } else {
-                    resp.json();
-                        
-                }
-            })
-            .catch(err => {
-                err.json();
-            });
+        return fetch(req);
     }
 
     createUrl(typeOfSearch, ListOfParametersFields) {

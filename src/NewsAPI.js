@@ -51,7 +51,6 @@ const processingOfResults = results => {
     if (!arcticlesOrSources.length ) {
         alert('nothing founded');
     } else {
-        resetRezults();
         arcticlesOrSources.forEach(news => {
             createVisualResult(news);
         });
@@ -71,6 +70,8 @@ class MainView {
         this.ListOfParametersFields = {};
         this.request = new NewsRequest();
         this.createView();
+        //this.processingOfErrorBind = processingOfError.bind(this);
+        //this.processingOfResultsBind = processingOfResults.bind(this);
     }
 
     createView() {
@@ -133,7 +134,7 @@ class MainView {
     }
 
     preperSettingsForCurrentTypeSearch() {
-        const availableParameters = TYPE_OF_SEARCH_DESCRIPTIONS[this.getTypeOfSearch].availableParameters;
+        const availableParameters = TYPE_OF_SEARCH_DESCRIPTIONS[this.getTypeOfSearch()].availableParameters;
         Object.keys(this.ListOfParametersFields).forEach(parameter => {
             const field = this.ListOfParametersFields[parameter];
             availableParameters.includes(parameter) ? field.style.display = 'flex' : field.style.display = 'none';
@@ -148,9 +149,22 @@ class MainView {
         };
     
         document.getElementsByName('settings_form')[0].onsubmit = () => {
-            this.request.sendRequest(this.getTypeOfSearch, this.ListOfParametersFields)
-                .then(results => processingOfResults(results))
-                .then(e => processingOfError(e));
+            this.resetRezults();
+            this.request.sendRequest(this.getTypeOfSearch(), this.ListOfParametersFields)
+                .then((resp) => {
+                    if (resp.status !== 200) {
+                        return Promise.reject(resp);
+                        //alert(`status: ${resp.status}\n message: ${resp.statusText}`);
+                    } else {
+                        resp.json()
+                            .then(results => processingOfResults(results));
+                            
+                    }
+                })
+                .catch(err => {
+                    err.json()
+                        .then(e => processingOfError(e));
+                });
             return false;
         };
     

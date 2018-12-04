@@ -7,7 +7,8 @@
     "test": "echo \"Error: no test specified\" && exit 1",
     "build": "babel NewsAPI.js --out-file compiled.js",
     "watch": "babel ./ --watch --out-file compiled.js",
-    "dev": "webpack"
+    "dev": "webpack --mode development",
+    "prod": "webpack --mode production"
   },
   "repository": {
     "type": "git",
@@ -25,6 +26,7 @@
     "@babel/preset-env": "^7.1.6",
     "babel-loader": "^8.0.4",
     "babel-plugin-array-includes": "^2.0.3",
+    "babel-plugin-syntax-function-bind": "^6.13.0",
     "eslint": "^5.9.0",
     "eslint-config-airbnb": "^17.1.0",
     "npm": "^6.4.1",
