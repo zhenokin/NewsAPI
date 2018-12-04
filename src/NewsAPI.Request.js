@@ -1,6 +1,7 @@
 'use strict';
 
 import { TYPE_OF_SEARCH_DESCRIPTIONS, MY_API } from './NewsAPI.Constants';
+import 'whatwg-fetch';
 
 class NewsRequest {
     preperRequestParameters(typeOfSearch, ListOfParametersFields) {
@@ -18,7 +19,7 @@ class NewsRequest {
     sendRequest(typeOfSearch, ListOfParametersFields) {
         const url = this.createUrl(typeOfSearch, ListOfParametersFields);
         const req = new Request(url);
-        return fetch(req);
+        return window.fetch(req);
     }
 
     createUrl(typeOfSearch, ListOfParametersFields) {

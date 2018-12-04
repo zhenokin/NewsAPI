@@ -36,5 +36,8 @@
   },
   "eslintConfig": {
     "root": true
+  },
+  "dependencies": {
+    "whatwg-fetch": "^3.0.0"
   }
 }
