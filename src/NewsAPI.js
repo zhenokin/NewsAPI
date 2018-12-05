@@ -3,6 +3,7 @@
 import { TYPE_OF_SEARCH_DESCRIPTIONS, PARAMETERS } from './NewsAPI.Constants';
 import { createDataListForField } from './NewsAPI.Helpers';
 import NewsRequest from './NewsAPI.Request';
+import ErrorPopup from './NewsAPI.Error';
 
 const createContainerByDescription = (name, description) => {
     const container = document.createElement('div');
@@ -24,13 +25,13 @@ const createContainerByDescription = (name, description) => {
 
 };
 
-const resetRezults = () => {
-    const results = document.getElementById('results');
-    results.style.border = '';
-    while(results.firstChild) {
-        results.removeChild(results.firstChild);
-    }
-};
+// const resetRezults = () => {
+//     const results = document.getElementById('results');
+//     results.style.border = '';
+//     while(results.firstChild) {
+//         results.removeChild(results.firstChild);
+//     }
+// };
 
 const createVisualResult = result => {
     const listOfResults = document.getElementById('results');
@@ -57,9 +58,9 @@ const processingOfResults = results => {
     }
 };
 
-const processingOfError = error => {
-    alert(`code: ${error.code}\nmessage: ${error.message}\nstatus: ${error.status}`);
-};
+// const processingOfError = error => {
+//     alert(`code: ${error.code}\nmessage: ${error.message}\nstatus: ${error.status}`);
+// };
 
 const changePropertyDisabledByInputs = (ids, value) => {
     ids.forEach(id => document.getElementById(id).disabled = value);
@@ -70,8 +71,6 @@ class MainView {
         this.ListOfParametersFields = {};
         this.request = new NewsRequest();
         this.createView();
-        //this.processingOfErrorBind = processingOfError.bind(this);
-        //this.processingOfResultsBind = processingOfResults.bind(this);
     }
 
     createView() {
@@ -163,7 +162,10 @@ class MainView {
                 })
                 .catch(err => {
                     err.json()
-                        .then(e => processingOfError(e));
+                        .then(e => {
+                            const error = new ErrorPopup();
+                            error.processingOfError(e);
+                        });
                 });
             return false;
         };
