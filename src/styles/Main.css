@@ -1,0 +1,80 @@
+#results {
+    display: flex;
+    flex-direction: column;
+    position: relative;
+    z-index: 1;
+}
+
+#field_country {
+    width: 50%;
+}
+
+#field_sources {
+    width: 70%;
+}
+
+#field_pageSize {
+    width: 40%;
+}
+
+#fieldset_settings {
+    margin: 20px 0 20px 0;
+}
+
+#error_popup {
+    display: 'none';
+    z-index: 5;
+    position: relative;
+    margin: auto;
+    width: 50%;
+}
+
+#error_dismiss_button {
+    margin: auto;
+}
+
+.settings {
+    display: flex;
+    position: relative;
+    z-index: 1;
+}
+
+.result_container {
+    margin: 5px 0 15px 0;
+}
+
+.info_container {
+    margin: 5px;
+    border: 2px solid black;
+}
+
+.info_name {
+    margin-right: 20px;
+    padding: 5px;
+    border-right: 2px solid black;
+    width: 10%;
+    text-align: center;
+}
+
+.info_description {
+    width: 70%;
+    text-align: center;
+}
+
+.error_field_container { 
+    margin: 5px;
+    border: 2px solid black;
+}
+
+.error_field_name {
+    margin-right: 20px;
+    padding: 5px;
+    border-right: 2px solid black;
+    width: 10%;
+    text-align: center;
+}
+
+.error_field_description {
+    width: 50%;
+    text-align: center;
+}

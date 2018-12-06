@@ -4,6 +4,7 @@ import { TYPE_OF_SEARCH_DESCRIPTIONS, PARAMETERS } from './NewsAPI.Constants';
 import { createDataListForField } from './NewsAPI.Helpers';
 import NewsRequest from './NewsAPI.Request';
 import ErrorPopup from './NewsAPI.Error';
+import './styles/Main.css';
 
 const createContainerByDescription = (name, description) => {
     const container = document.createElement('div');
